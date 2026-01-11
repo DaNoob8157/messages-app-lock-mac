@@ -11,15 +11,19 @@ This project provides a secure way to prevent unauthorized access to your Messag
 
 ## Requirements
 
-- macOS 10.13 or later
+- macOS 26.0 or later, Apple Intelligence enabled
 - Ability to use Script Editor and Terminal
 - Basic familiarity with command-line interface
 
 ## Installation Guide
 
-### Step 1: Create the Auto-Quit Guard App
+### Step 1: Create the Auto-Quit Guard App  
 
-This step creates an AppleScript application that automatically quits Messages in a loop.
+This step creates an AppleScript application that automatically quits Messages in a loop.  
+
+1. Get Script `MessagesQuit.scpt` from the source code and skip to *Step 3* of this section (Export as an Application).  
+
+**OR follow these steps:**  
 
 1. Open Script Editor by pressing **Cmd+Space** and typing `"Script Editor"`
 
@@ -47,6 +51,7 @@ end repeat
    - Press **Cmd+Shift+G**
    - Navigate to: `~/Library/LaunchAgents/`
    - Click **Save**
+     
 
 ### Step 2: Deploy the Guard as a Launch Agent
 
@@ -71,7 +76,7 @@ This step sets up the app to run automatically on system startup.
        <string>com.user.messagesquit</string>
        <key>ProgramArguments</key>
        <array>
-           <string>/Users/alexander-mckelvy/Library/LaunchAgents/MessagesQuit.app/Contents/MacOS/applet</string>
+           <string>/Users/YOUR_USERNAME/Library/LaunchAgents/MessagesQuit.app/Contents/MacOS/applet</string>
        </array>
        <key>RunAtLoad</key>
        <true/>
@@ -81,7 +86,7 @@ This step sets up the app to run automatically on system startup.
    </plist>
    EOF
    ```
-   **Important:** Replace `alexander-mckelvy` with your actual username from Step 2.
+   **Important:** Replace `YOUR_USERNAME` with your actual username from Step 2.
 
 4. Load the launch agent:
    ```bash
@@ -96,7 +101,28 @@ Verify everything is working correctly:
 ~/Library/LaunchAgents/MessagesQuit.app/Contents/MacOS/applet &
 ```
 
-The Messages app should quit automatically when it tries to run.
+The Messages app should quit automatically when it tries to run.  
+
+### Step 4: Add Custom Shortcuts  
+
+This step sets up the laucher and quitter shortcuts.
+
+1. Download the `shortcut.` files from the source code.  
+
+2. Export your shortcuts from the Shortcuts app:  
+   - Open the **Shortcuts** app on your Mac.  
+   - Open the shortcut.  
+   - Click **File** → **Add to Dock**  
+
+3. Copy the custom `.icns` files into the app bundles' Resources folder:  
+    - Right click the shortcut on the dock and select **Show in Finder**.  
+    - Right click the shortcut app and select **Show Package Contents**.  
+    - Copy the `.icns` file into the `Contents/Resources` folder of the shortcut app bundle and delete the original one.  
+    - Rename the copied `.icns` file to `ShortcutIcon.icns`.
+
+> ***NOTE***: pair the corresponding `.icns` file to the corresponding shortcut app bundle, to get the red icon for `Messages Quitter.app`, and the green icon for `Messages Launcher.app`
+
+4. The custom icon should now be applied. If not, restart your Mac to refresh the system icon cache.
 
 ## Troubleshooting
 
@@ -135,6 +161,8 @@ If the plist file doesn't load, verify:
 3. If Messages is detected, it immediately terminates the process
 4. This cycle repeats continuously
 5. The launch agent ensures the guard app restarts if it crashes
+6. `Messages Launcher.app` unloads the guardrail and launches the `Messages` app after 3 seconds if the right password is entered.
+7. Once done with the Messages app and `Messages Quitter.app` is lauched, the guardrail is launched back into place.
 
 ## Security Notes
 
@@ -155,7 +183,7 @@ rm -rf ~/Library/LaunchAgents/MessagesQuit.app
 
 ## License
 
-MIT License - Feel free to modify and use this project as needed.
+MIT License - Feel free to modify and use this project as needed, located in `LICENSE`.
 
 ## Support
 
